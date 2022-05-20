@@ -16,7 +16,7 @@ class Framework:
         return [view.get_template().encode(encoding='utf-8') if view else b'Page not found']
 
     def _get_view(self, request):
-        path = request.path
+        path = self._get_path(request.path)
         for url in self.urls:
             if url.url == path:
                 return url.view
@@ -26,3 +26,8 @@ class Framework:
             return getattr(view, request.method)(view, request)
         else:
             return 'Метод недоступен.'
+
+    def _get_path(self, path):
+        if not path.endswith('/'):
+            path = ''.join((path, '/'))
+        return path
