@@ -10,3 +10,7 @@ class Homepage(View):
 
     def post(self, request):
         return 'POST SUCCESS'
+
+
+class AboutPage(View):
+    template_name = 'about.html'
