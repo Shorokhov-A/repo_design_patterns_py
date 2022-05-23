@@ -1,6 +1,8 @@
 from framework.request import Request
 from framework.view import View
 
+from pprint import pprint
+
 
 class Framework:
 

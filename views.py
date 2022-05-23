@@ -13,4 +13,17 @@ class Homepage(View):
 
 
 class AboutPage(View):
+
     template_name = 'about.html'
+
+
+class Contacts(View):
+
+    template_name = 'contacts.html'
+
+    def get(self, request):
+        return 'GET SUCCESS'
+
+    def post(self, request):
+        print(request.data)
+        return 'POST SUCCESS'
