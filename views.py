@@ -1,3 +1,5 @@
+import json
+
 from framework.view import View
 
 
@@ -25,5 +27,6 @@ class Contacts(View):
         return 'GET SUCCESS'
 
     def post(self, request):
-        print(request.data)
+        with open('message.json', 'w', encoding='utf-8') as f:
+            json.dump(request.data, f)
         return 'POST SUCCESS'
