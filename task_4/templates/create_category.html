@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {{ super() }}
+    {% if data_list.get('category') %}
+        {% for item in data_list['category'] %}
+         <p>{{ item }}</p>
+        {% endfor %}
+    {% endif %}
+    <form action="" method="post">
+        <label for="category">Категория</label>
+        <input name="category" id="category" type="text">
+        <input type="submit" value="Добавить категорию">
+    </form>
+{% endblock %}
