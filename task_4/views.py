@@ -54,3 +54,34 @@ class CreateCategory(View):
         site.categories.append(new_category)
         self.data = site.categories
         print(self.data)
+
+
+class CreateCourse(View):
+    template_name = 'create_course.html'
+    category_id = -1
+
+    def get(self, request):
+        try:
+            self.category_id = int(request.query_params['id'][0])
+            category = site.find_category_by_id(int(self.category_id))
+            self.data = {
+                'objects_list': category.courses,
+                'name': category.name,
+                'id': category.id,
+            }
+        except KeyError:
+            return 'No categories have been added yet'
+
+    def post(self, request):
+        data = request.data
+        name = data['name']
+        category = None
+        if self.category_id != -1:
+            category = site.find_category_by_id(int(self.category_id))
+            course = site.create_course('video_course', name, category)
+            site.courses.append(course)
+        self.data = {
+            'objects_list': category.courses,
+            'name': category.name,
+            'id': category.id,
+        }
