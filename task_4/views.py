@@ -1,6 +1,9 @@
 import json
 
 from framework.view import View
+from framework.patterns.generative_patterns import Engine
+
+site = Engine()
 
 
 class Homepage(View):
@@ -37,18 +40,17 @@ class CreateCategory(View):
     template_name = 'create_category.html'
 
     def get(self, request):
-        with open('categories.json', 'w', encoding='utf-8') as f:
-            json.dump(self.data, f)
-        with open('categories.json', 'r', encoding='utf-8') as f:
-            self.data = json.load(f)
-        return 'GET SUCCESS'
+        categories = site.categories
+        self.data = categories
 
     def post(self, request):
-        data = self.data
-        if data.get('category'):
-            data['category'].extend(request.data['category'])
-        else:
-            data['category'] = request.data['category']
-        with open('categories.json', 'w', encoding='utf-8') as f:
-            json.dump(self.data, f)
-        return 'POST SUCCESS'
+        data = request.data
+        name = data['category']
+        category_id = data.get('category_id')
+        category = None
+        if category_id:
+            category = site.find_category_by_id(int(category_id))
+        new_category = site.create_category(name, category)
+        site.categories.append(new_category)
+        self.data = site.categories
+        print(self.data)
