@@ -85,3 +85,10 @@ class CreateCourse(View):
             'name': category.name,
             'id': category.id,
         }
+
+
+class CoursesList(View):
+    template_name = 'courses.html'
+
+    def get(self, request):
+        self.data = site.categories

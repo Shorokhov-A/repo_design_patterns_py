@@ -1,5 +1,5 @@
 from framework.url import Url
-from views import Homepage, AboutPage, Contacts, CreateCategory, CreateCourse
+from views import Homepage, AboutPage, Contacts, CreateCategory, CreateCourse, CoursesList
 
 url_patterns = [
     Url('/', Homepage),
@@ -7,4 +7,5 @@ url_patterns = [
     Url('/contacts/', Contacts),
     Url('/create_category/', CreateCategory),
     Url('/create_course/', CreateCourse),
+    Url('/courses/', CoursesList),
 ]
