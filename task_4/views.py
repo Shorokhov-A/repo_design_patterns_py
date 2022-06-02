@@ -94,3 +94,30 @@ class CoursesList(View):
     def get(self, request):
         logger.log('Список курсов')
         self.data = site.categories
+
+
+class CourseCopy(View):
+    template_name = 'create_course.html'
+
+    def get(self, request):
+        request_params = request.query_params
+        print(f'Курсы {site.courses}')
+        try:
+            name = request_params['name']
+            old_course = site.get_course(name)
+            print(f'Старый курс {old_course}')
+            if old_course:
+                category = site.find_category_by_id(old_course.category.id)
+                new_name = [f'copy_{name[0]}']
+                new_course = old_course.clone()
+                new_course.name = new_name
+                site.courses.append(new_course)
+                category.courses.append(new_course)
+
+            self.data = {
+                'objects_list': category.courses,
+                'name': category.name,
+                'id': category.id,
+            }
+        except KeyError:
+            return 'No courses have been added yet'

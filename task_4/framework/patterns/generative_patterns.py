@@ -1,3 +1,4 @@
+import copy
 from urllib.parse import unquote
 
 
@@ -44,8 +45,14 @@ class Category:
         return result
 
 
+# Прототип курса
+class CoursePrototype:
+    def clone(self):
+        return copy.deepcopy(self)
+
+
 # Курс
-class Course:
+class Course(CoursePrototype):
 
     def __init__(self, name, category):
         self.name = name
