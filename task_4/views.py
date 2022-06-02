@@ -1,9 +1,10 @@
 import json
 
 from framework.view import View
-from framework.patterns.generative_patterns import Engine
+from framework.patterns.generative_patterns import Engine, Logger
 
 site = Engine()
+logger = Logger('main')
 
 
 class Homepage(View):
@@ -91,4 +92,5 @@ class CoursesList(View):
     template_name = 'courses.html'
 
     def get(self, request):
+        logger.log('Список курсов')
         self.data = site.categories
