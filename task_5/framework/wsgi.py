@@ -33,3 +33,9 @@ class Framework:
         if not path.endswith('/'):
             path = ''.join((path, '/'))
         return path
+
+
+class FakeFramework(Framework):
+    def __call__(self, environ, start_response):
+        start_response('200 OK', [('Content-Type', 'text/html')])
+        return [b'Hello from Fake']
