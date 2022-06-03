@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
     {{ super() }}
-    <a href="create_category">Добавить категорию</a>
+    <a href="/create_category/">Добавить категорию</a>
     {% if data_list %}
         {% for item in data_list %}
             <p>{{ item.name }}</p> <span>Количество курсов: {{item.course_count()}}</span>
