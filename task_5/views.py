@@ -3,11 +3,13 @@ import json
 from framework.view import View
 from framework.patterns.generative_patterns import Engine, Logger
 from framework.patterns.structural_patterns import AddRoute
+from framework.patterns.structural_patterns import debug
 
 site = Engine()
 logger = Logger('main')
 
 
+@debug
 @AddRoute(url='/')
 class Homepage(View):
 
@@ -40,6 +42,7 @@ class Contacts(View):
         return 'POST SUCCESS'
 
 
+@debug
 @AddRoute(url='/create_category/')
 class CreateCategory(View):
 
@@ -60,6 +63,7 @@ class CreateCategory(View):
         site.categories.append(new_category)
         self.data = site.categories
         print(self.data)
+        return 'POST SUCCESS'
 
 
 @AddRoute(url='/create_course/')
