@@ -2,11 +2,13 @@ import json
 
 from framework.view import View
 from framework.patterns.generative_patterns import Engine, Logger
+from framework.patterns.structural_patterns import AddRoute
 
 site = Engine()
 logger = Logger('main')
 
 
+@AddRoute(url='/')
 class Homepage(View):
 
     template_name = 'index.html'
@@ -18,11 +20,13 @@ class Homepage(View):
         return 'POST SUCCESS'
 
 
+@AddRoute(url='/about/')
 class AboutPage(View):
 
     template_name = 'about.html'
 
 
+@AddRoute(url='/contacts/')
 class Contacts(View):
 
     template_name = 'contacts.html'
@@ -36,6 +40,7 @@ class Contacts(View):
         return 'POST SUCCESS'
 
 
+@AddRoute(url='/create_category/')
 class CreateCategory(View):
 
     template_name = 'create_category.html'
@@ -57,6 +62,7 @@ class CreateCategory(View):
         print(self.data)
 
 
+@AddRoute(url='/create_course/')
 class CreateCourse(View):
     template_name = 'create_course.html'
     category_id = -1
@@ -88,6 +94,7 @@ class CreateCourse(View):
         }
 
 
+@AddRoute(url='/courses/')
 class CoursesList(View):
     template_name = 'courses.html'
 
@@ -96,6 +103,7 @@ class CoursesList(View):
         self.data = site.categories
 
 
+@AddRoute(url='/copy-course/')
 class CourseCopy(View):
     template_name = 'create_course.html'
 
