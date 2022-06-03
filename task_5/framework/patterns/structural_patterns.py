@@ -1,5 +1,5 @@
 import inspect
-import types
+from time import time
 
 from framework.url import Url
 
@@ -29,9 +29,12 @@ class AddRoute:
 
 def debug(cls):
     def decorate(func):
-        def new_func(self, request):
-            print(f'Из {self.__name__} вызвана функция {func.__name__}')
-            return func(self, request)
+        def new_func(self, *args, **kwargs):
+            time_start = time()
+            result = func(self, *args, **kwargs)
+            print(f'Из {self.__name__} вызвана функция {func.__name__}'
+                  f'\nВремя выполнения функции {time() - time_start}')
+            return result
         return new_func
 
     for key, value in cls.__dict__.items():
