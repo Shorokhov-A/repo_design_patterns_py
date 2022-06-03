@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+    {{ super() }}
+    {% if data_list %}
+        {% for item in data_list['objects_list'] %}
+            <li>
+              {{ item.name }} <span><a href="/copy-course/?name={{ item.name[0] }}&id={{ item.category.id }}">Скопировать курс</a></span>
+            </li>
+        {% endfor %}
+    {% endif %}
+    <form action="" method="post">
+        <label for="course">Курс</label>
+        <input name="name" id="course" type="text">
+        <input type="submit" value="Добавить курс">
+    </form>
+{% endblock %}
