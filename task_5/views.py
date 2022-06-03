@@ -3,7 +3,7 @@ import json
 from framework.view import View
 from framework.patterns.generative_patterns import Engine, Logger
 from framework.patterns.structural_patterns import AddRoute
-from framework.patterns.structural_patterns import debug
+from framework.patterns.structural_patterns import debug, DebugMethod
 
 site = Engine()
 logger = Logger('main')
