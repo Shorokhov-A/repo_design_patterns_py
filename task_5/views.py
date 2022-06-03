@@ -63,7 +63,7 @@ class CreateCourse(View):
 
     def get(self, request):
         try:
-            self.category_id = int(request.query_params['id'][0])
+            self.category_id = int(request.query_params['id'])
             category = site.find_category_by_id(int(self.category_id))
             self.data = {
                 'objects_list': category.courses,
@@ -108,7 +108,7 @@ class CourseCopy(View):
             print(f'Старый курс {old_course}')
             if old_course:
                 category = site.find_category_by_id(old_course.category.id)
-                new_name = [f'copy_{name[0]}']
+                new_name = f'copy_{name}'
                 new_course = old_course.clone()
                 new_course.name = new_name
                 site.courses.append(new_course)

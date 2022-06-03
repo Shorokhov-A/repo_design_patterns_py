@@ -25,9 +25,11 @@ class Request:
                     key, value = item.split('=')
                     value = urllib.parse.unquote(value)
                     if result.get(key):
+                        if isinstance(result[key], str):
+                            result[key] = [result.get(key)]
                         result[key].append(value)
                     else:
-                        result[key] = [value]
+                        result[key] = value
 
         return result
 

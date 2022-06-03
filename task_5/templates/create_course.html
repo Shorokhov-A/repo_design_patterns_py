@@ -4,7 +4,7 @@
     {% if data_list %}
         {% for item in data_list['objects_list'] %}
             <li>
-              {{ item.name }} <span><a href="/copy-course/?name={{ item.name[0] }}&id={{ item.category.id }}">Скопировать курс</a></span>
+              {{ item.name }} <span><a href="/copy-course/?name={{ item.name }}&id={{ item.category.id }}">Скопировать курс</a></span>
             </li>
         {% endfor %}
     {% endif %}
