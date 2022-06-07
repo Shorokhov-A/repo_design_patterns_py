@@ -1,6 +1,6 @@
 import json
 
-from framework.view import View
+from framework.view import View, TemplateView
 from framework.patterns.generative_patterns import Engine, Logger
 from framework.patterns.structural_patterns import AddRoute
 from framework.patterns.structural_patterns import debug, DebugMethod
@@ -11,7 +11,7 @@ logger = Logger('main')
 
 @debug
 @AddRoute(url='/')
-class Homepage(View):
+class Homepage(TemplateView):
 
     template_name = 'index.html'
 
@@ -23,7 +23,7 @@ class Homepage(View):
 
 
 @AddRoute(url='/about/')
-class AboutPage(View):
+class AboutPage(TemplateView):
 
     template_name = 'about.html'
 
