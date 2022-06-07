@@ -1,6 +1,6 @@
 import json
 
-from framework.view import View, TemplateView
+from framework.view import View, TemplateView, ListView
 from framework.patterns.generative_patterns import Engine, Logger
 from framework.patterns.structural_patterns import AddRoute
 from framework.patterns.structural_patterns import debug, DebugMethod
@@ -136,11 +136,9 @@ class CourseCopy(View):
 
 
 @AddRoute(url='/students/')
-class StudentsList(View):
+class StudentsList(ListView):
     template_name = 'students.html'
-
-    def get(self, request):
-        self.data = site.students
+    data = {'objects_list': site.students}
 
 
 @AddRoute(url='/create-students/')

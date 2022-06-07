@@ -5,7 +5,7 @@ from framework.template import render
 class View:
 
     # template_name = None
-    data = {}
+    # data = {}
 
     def get(self, request: Request, *args, **kwargs):
         pass
@@ -24,3 +24,11 @@ class TemplateView(View):
     @classmethod
     def get_template(cls):
         return render(cls.template_name)
+
+
+class ListView(TemplateView):
+    data = {}
+
+    @classmethod
+    def get_template(cls):
+        return render(cls.template_name, data_list=cls.data)
