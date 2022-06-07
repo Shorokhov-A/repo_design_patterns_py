@@ -11,7 +11,9 @@ class Teacher(User):
 
 
 class Student(User):
-    pass
+    def __init__(self, name, email):
+        self.name = name
+        self.email = email
 
 
 # Абстрактная фабрика - фабрика пользователей.
@@ -23,8 +25,8 @@ class UserFactory:
 
     # Фабричный метод
     @classmethod
-    def create(cls, user_type):
-        return cls.types[user_type]()
+    def create(cls, user_type, name, email):
+        return cls.types[user_type](name, email)
 
 
 # Категория
@@ -92,8 +94,8 @@ class Engine:
         self.categories = []
 
     @staticmethod
-    def create_user(user_type):
-        return UserFactory.create(user_type)
+    def create_user(user_type, name, email):
+        return UserFactory.create(user_type, name, email)
 
     @staticmethod
     def create_category(name, category=None):

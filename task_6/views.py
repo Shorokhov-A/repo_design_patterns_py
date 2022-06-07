@@ -133,3 +133,23 @@ class CourseCopy(View):
             }
         except KeyError:
             return 'No courses have been added yet'
+
+
+@AddRoute(url='/students/')
+class StudentsList(View):
+    template_name = 'students.html'
+
+    def get(self, request):
+        self.data = site.students
+
+
+@AddRoute(url='/create-students/')
+class CreateStudent(View):
+    template_name = 'create_student.html'
+
+    def post(self, request):
+        data = request.data
+        name = data['login']
+        email = data['email']
+        new_obj = site.create_user('student', name, email)
+        site.students.append(new_obj)
