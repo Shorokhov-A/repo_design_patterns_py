@@ -109,7 +109,7 @@ class CreateCourse(CreateView):
             category = site.find_category_by_id(int(self.category_id))
             course = site.create_course('video_course', name, category)
             site.courses.append(course)
-        self.data = {
+        self.context = {
             'objects_list': category.courses,
             'name': category.name,
             'id': category.id,
