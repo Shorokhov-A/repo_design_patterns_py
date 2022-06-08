@@ -1,6 +1,6 @@
 import json
 
-from framework.view import View, TemplateView, ListView
+from framework.view import View, TemplateView, ListView, CreateView
 from framework.patterns.generative_patterns import Engine, Logger
 from framework.patterns.structural_patterns import AddRoute
 from framework.patterns.structural_patterns import debug, DebugMethod
@@ -23,7 +23,7 @@ class AboutPage(TemplateView):
 
 
 @AddRoute(url='/contacts/')
-class Contacts(View):
+class Contacts(CreateView):
 
     template_name = 'contacts.html'
 
@@ -36,15 +36,34 @@ class Contacts(View):
         return 'POST SUCCESS'
 
 
+# @debug
+# @AddRoute(url='/create_category/')
+# class CreateCategory(View):
+#
+#     template_name = 'create_category.html'
+#
+#     def get(self, request):
+#         categories = site.categories
+#         self.data = categories
+#
+#     def post(self, request):
+#         data = request.data
+#         name = data['category']
+#         category_id = data.get('category_id')
+#         category = None
+#         if category_id:
+#             category = site.find_category_by_id(int(category_id))
+#         new_category = site.create_category(name, category)
+#         site.categories.append(new_category)
+#         self.data = site.categories
+#         print(self.data)
+#         return 'POST SUCCESS'
 @debug
 @AddRoute(url='/create_category/')
-class CreateCategory(View):
+class CreateCategory(CreateView):
 
     template_name = 'create_category.html'
-
-    def get(self, request):
-        categories = site.categories
-        self.data = categories
+    data = site.categories
 
     def post(self, request):
         data = request.data
@@ -61,7 +80,7 @@ class CreateCategory(View):
 
 
 @AddRoute(url='/create_course/')
-class CreateCourse(View):
+class CreateCourse(CreateView):
     template_name = 'create_course.html'
     category_id = -1
 
@@ -69,7 +88,12 @@ class CreateCourse(View):
         try:
             self.category_id = int(request.query_params['id'])
             category = site.find_category_by_id(int(self.category_id))
-            self.data = {
+            # self.data = {
+            #     'objects_list': category.courses,
+            #     'name': category.name,
+            #     'id': category.id,
+            # }
+            self.context = {
                 'objects_list': category.courses,
                 'name': category.name,
                 'id': category.id,
@@ -99,7 +123,7 @@ class CoursesList(ListView):
 
 
 @AddRoute(url='/copy-course/')
-class CourseCopy(View):
+class CourseCopy(ListView):
     template_name = 'create_course.html'
 
     def get(self, request):
@@ -117,7 +141,12 @@ class CourseCopy(View):
                 site.courses.append(new_course)
                 category.courses.append(new_course)
 
-            self.data = {
+            # self.data = {
+            #     'objects_list': category.courses,
+            #     'name': category.name,
+            #     'id': category.id,
+            # }
+            self.context = {
                 'objects_list': category.courses,
                 'name': category.name,
                 'id': category.id,
