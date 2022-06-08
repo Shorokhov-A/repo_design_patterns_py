@@ -1,5 +1,6 @@
 import copy
 from urllib.parse import unquote
+from framework.patterns.behavioral_patterns import ConsoleWriter
 
 
 class User:
@@ -145,9 +146,9 @@ class SingletonByName(type):
 
 class Logger(metaclass=SingletonByName):
 
-    def __init__(self, name):
+    def __init__(self, name, writer=ConsoleWriter()):
         self.name = name
+        self.writer = writer
 
-    @staticmethod
-    def log(text):
-        print('log--->', text)
+    def log(self, text):
+        self.writer.write(f'log--->{text}')
