@@ -15,7 +15,7 @@ class Framework:
         view = self._get_view(request)
         print(request.query_params)
         print(self._get_response(request, view))
-        return [view.get_template().encode(encoding='utf-8') if view else b'Page not found']
+        return [view.get_template(view).encode(encoding='utf-8') if view else b'Page not found']
 
     def _get_view(self, request):
         path = self._get_path(request.path)

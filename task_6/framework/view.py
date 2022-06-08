@@ -21,9 +21,8 @@ class View:
 class TemplateView(View):
     template_name = None
 
-    @classmethod
-    def get_template(cls):
-        return render(cls.template_name)
+    def get_template(self):
+        return render(self.template_name)
 
 
 class ListView(TemplateView):

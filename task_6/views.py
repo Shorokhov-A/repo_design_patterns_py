@@ -15,12 +15,6 @@ class Homepage(TemplateView):
 
     template_name = 'index.html'
 
-    def get(self, request):
-        return 'GET SUCCESS'
-
-    def post(self, request):
-        return 'POST SUCCESS'
-
 
 @AddRoute(url='/about/')
 class AboutPage(TemplateView):
