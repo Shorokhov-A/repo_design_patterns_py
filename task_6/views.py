@@ -93,12 +93,9 @@ class CreateCourse(View):
 
 
 @AddRoute(url='/courses/')
-class CoursesList(View):
+class CoursesList(ListView):
     template_name = 'courses.html'
-
-    def get(self, request):
-        logger.log('Список курсов')
-        self.data = site.categories
+    data = site.categories
 
 
 @AddRoute(url='/copy-course/')
@@ -132,7 +129,7 @@ class CourseCopy(View):
 @AddRoute(url='/students/')
 class StudentsList(ListView):
     template_name = 'students.html'
-    data = {'objects_list': site.students}
+    data = site.students
 
 
 @AddRoute(url='/create-students/')

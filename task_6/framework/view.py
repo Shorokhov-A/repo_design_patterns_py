@@ -26,8 +26,11 @@ class TemplateView(View):
 
 
 class ListView(TemplateView):
-    data = {}
+    data = None
+    context = None
 
-    @classmethod
-    def get_template(cls):
-        return render(cls.template_name, data_list=cls.data)
+    def get(self, request: Request, *args, **kwargs):
+        self.context = {'objects_list': self.data}
+
+    def get_template(self):
+        return render(self.template_name, data_list=self.context)
