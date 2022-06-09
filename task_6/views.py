@@ -162,7 +162,7 @@ class StudentsList(ListView):
 
 
 @AddRoute(url='/create-students/')
-class CreateStudent(View):
+class CreateStudent(CreateView):
     template_name = 'create_student.html'
 
     def post(self, request):
@@ -171,3 +171,23 @@ class CreateStudent(View):
         email = data['email']
         new_obj = site.create_user('student', name, email)
         site.students.append(new_obj)
+
+
+@AddRoute(url='/add-student/')
+class AddStudentToCourse(CreateView):
+    template_name = 'add_student.html'
+    context = {
+        'courses': site.courses,
+        'students': site.students,
+    }
+
+    def get(self, request):
+        return self.context
+
+    def post(self, request):
+        data = request.data
+        course_name = data['course_name']
+        course = site.get_course(course_name)
+        student_name = data['student_name']
+        student = site.get_student(student_name)
+        course.add_student(student)

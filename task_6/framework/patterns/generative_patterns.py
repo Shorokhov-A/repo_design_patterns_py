@@ -4,7 +4,8 @@ from framework.patterns.behavioral_patterns import ConsoleWriter
 
 
 class User:
-    pass
+    def __init__(self, name):
+        self.name = name
 
 
 class Teacher(User):
@@ -13,8 +14,9 @@ class Teacher(User):
 
 class Student(User):
     def __init__(self, name, email):
-        self.name = name
+        self.courses = []
         self.email = email
+        super().__init__(name)
 
 
 # Абстрактная фабрика - фабрика пользователей.
@@ -61,6 +63,11 @@ class Course(CoursePrototype):
         self.name = name
         self.category = category
         self.category.courses.append(self)
+        self.students = []
+
+    def add_student(self, student: Student):
+        self.students.append(student)
+        student.courses.append(self)
 
 
 # Интерактивный курс
@@ -118,6 +125,11 @@ class Engine:
             if item.name == name:
                 return item
         return None
+
+    def get_student(self, name) -> Student:
+        for item in self.students:
+            if item.name == name:
+                return item
 
     @staticmethod
     def decode_value(value):
