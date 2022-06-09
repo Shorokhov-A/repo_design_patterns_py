@@ -3,7 +3,7 @@ import json
 from framework.view import View, TemplateView, ListView, CreateView
 from framework.patterns.generative_patterns import Engine, Logger
 from framework.patterns.structural_patterns import AddRoute, debug, DebugMethod
-from framework.patterns.behavioral_patterns import EmailNotifier, SmsNotifier
+from framework.patterns.behavioral_patterns import EmailNotifier, SmsNotifier, BaseSerializer
 
 site = Engine()
 logger = Logger('main')
@@ -196,3 +196,11 @@ class AddStudentToCourse(CreateView):
         student_name = data['student_name']
         student = site.get_student(student_name)
         course.add_student(student)
+
+
+@AddRoute(url='/api/')
+class CourseApi(TemplateView):
+    template_name = 'api.html'
+
+    def get(self, request):
+        return BaseSerializer(site.courses).save()

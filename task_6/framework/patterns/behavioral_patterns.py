@@ -1,3 +1,6 @@
+import jsonpickle
+
+
 class ConsoleWriter:
 
     def write(self, text):
@@ -40,3 +43,16 @@ class EmailNotifier(Observer):
 
     def update(self, subject):
         print(('EMAIL->', 'к нам присоединился', subject.students[-1].name))
+
+
+class BaseSerializer:
+
+    def __init__(self, obj):
+        self.obj = obj
+
+    def save(self):
+        return jsonpickle.dumps(self.obj)
+
+    @staticmethod
+    def load(data):
+        return jsonpickle.loads(data)
