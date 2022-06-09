@@ -1,6 +1,6 @@
 import copy
 from urllib.parse import unquote
-from framework.patterns.behavioral_patterns import ConsoleWriter
+from framework.patterns.behavioral_patterns import ConsoleWriter, Subject
 
 
 class User:
@@ -57,17 +57,22 @@ class CoursePrototype:
 
 
 # Курс
-class Course(CoursePrototype):
+class Course(CoursePrototype, Subject):
 
     def __init__(self, name, category):
         self.name = name
         self.category = category
         self.category.courses.append(self)
         self.students = []
+        super().__init__()
+
+    def __getitem__(self, item):
+        return self.students[item]
 
     def add_student(self, student: Student):
         self.students.append(student)
         student.courses.append(self)
+        self.notify()
 
 
 # Интерактивный курс

@@ -2,11 +2,14 @@ import json
 
 from framework.view import View, TemplateView, ListView, CreateView
 from framework.patterns.generative_patterns import Engine, Logger
-from framework.patterns.structural_patterns import AddRoute
-from framework.patterns.structural_patterns import debug, DebugMethod
+from framework.patterns.structural_patterns import AddRoute, debug, DebugMethod
+from framework.patterns.behavioral_patterns import EmailNotifier, SmsNotifier
 
 site = Engine()
 logger = Logger('main')
+
+email_notifier = EmailNotifier()
+sms_notifier = SmsNotifier()
 
 
 @debug
@@ -108,6 +111,8 @@ class CreateCourse(CreateView):
         if self.category_id != -1:
             category = site.find_category_by_id(int(self.category_id))
             course = site.create_course('video_course', name, category)
+            course.observers.append(email_notifier)
+            course.observers.append(sms_notifier)
             site.courses.append(course)
         self.context = {
             'objects_list': category.courses,
