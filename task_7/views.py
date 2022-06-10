@@ -1,9 +1,10 @@
 import json
 
 from framework.view import View, TemplateView, ListView, CreateView
-from framework.patterns.generative_patterns import Engine, Logger, MapperRegistry
+from framework.patterns.generative_patterns import Engine, Logger
 from framework.patterns.structural_patterns import AddRoute, debug, DebugMethod
 from framework.patterns.behavioral_patterns import EmailNotifier, SmsNotifier, BaseSerializer
+from framework.patterns.data_mapper import MapperRegistry
 
 site = Engine()
 logger = Logger('main')
