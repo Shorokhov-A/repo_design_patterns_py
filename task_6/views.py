@@ -39,37 +39,19 @@ class Contacts(CreateView):
         return 'POST SUCCESS'
 
 
-# @debug
-# @AddRoute(url='/create_category/')
-# class CreateCategory(View):
-#
-#     template_name = 'create_category.html'
-#
-#     def get(self, request):
-#         categories = site.categories
-#         self.data = categories
-#
-#     def post(self, request):
-#         data = request.data
-#         name = data['category']
-#         category_id = data.get('category_id')
-#         category = None
-#         if category_id:
-#             category = site.find_category_by_id(int(category_id))
-#         new_category = site.create_category(name, category)
-#         site.categories.append(new_category)
-#         self.data = site.categories
-#         print(self.data)
-#         return 'POST SUCCESS'
 @debug
 @AddRoute(url='/create_category/')
 class CreateCategory(CreateView):
 
     template_name = 'create_category.html'
-    data = site.categories
 
-    def post(self, request):
-        data = request.data
+    def get_context_data(self):
+        context = super().get_context_data(self)
+        context.update({self.context_objects_list: site.categories})
+        return context
+
+    def create_obj(self, *args, **kwargs):
+        data = self.request.data
         name = data['category']
         category_id = data.get('category_id')
         category = None
@@ -77,9 +59,6 @@ class CreateCategory(CreateView):
             category = site.find_category_by_id(int(category_id))
         new_category = site.create_category(name, category)
         site.categories.append(new_category)
-        self.data = site.categories
-        print(self.data)
-        return 'POST SUCCESS'
 
 
 @AddRoute(url='/create_course/')
@@ -87,52 +66,48 @@ class CreateCourse(CreateView):
     template_name = 'create_course.html'
     category_id = -1
 
-    def get(self, request):
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(self)
         try:
-            self.category_id = int(request.query_params['id'])
+            self.category_id = int(self.request.query_params['id'])
             category = site.find_category_by_id(int(self.category_id))
-            # self.data = {
-            #     'objects_list': category.courses,
-            #     'name': category.name,
-            #     'id': category.id,
-            # }
-            self.context = {
+            context.update({
                 'objects_list': category.courses,
                 'name': category.name,
-                'id': category.id,
-            }
+                'id': category.id
+            })
+            return context
         except KeyError:
             return 'No categories have been added yet'
 
-    def post(self, request):
-        data = request.data
+    def create_obj(self, *args, **kwargs):
+        data = self.request.data
         name = data['name']
-        category = None
         if self.category_id != -1:
             category = site.find_category_by_id(int(self.category_id))
             course = site.create_course('video_course', name, category)
             course.observers.append(email_notifier)
             course.observers.append(sms_notifier)
             site.courses.append(course)
-        self.context = {
-            'objects_list': category.courses,
-            'name': category.name,
-            'id': category.id,
-        }
 
 
 @AddRoute(url='/courses/')
 class CoursesList(ListView):
     template_name = 'courses.html'
-    data = site.categories
+
+    def get_context_data(self):
+        context = super().get_context_data(self)
+        context.update({self.context_objects_list: site.categories})
+        return context
 
 
 @AddRoute(url='/copy-course/')
 class CourseCopy(ListView):
     template_name = 'create_course.html'
 
-    def get(self, request):
-        request_params = request.query_params
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(self)
+        request_params = self.request.query_params
         print(f'Курсы {site.courses}')
         try:
             name = request_params['name']
@@ -145,17 +120,12 @@ class CourseCopy(ListView):
                 new_course.name = new_name
                 site.courses.append(new_course)
                 category.courses.append(new_course)
-
-            # self.data = {
-            #     'objects_list': category.courses,
-            #     'name': category.name,
-            #     'id': category.id,
-            # }
-            self.context = {
+            context.update({
                 'objects_list': category.courses,
                 'name': category.name,
                 'id': category.id,
-            }
+            })
+            return context
         except KeyError:
             return 'No courses have been added yet'
 
@@ -163,15 +133,19 @@ class CourseCopy(ListView):
 @AddRoute(url='/students/')
 class StudentsList(ListView):
     template_name = 'students.html'
-    data = site.students
+
+    def get_context_data(self):
+        context = super().get_context_data(self)
+        context.update({self.context_objects_list: site.students})
+        return context
 
 
 @AddRoute(url='/create-students/')
 class CreateStudent(CreateView):
     template_name = 'create_student.html'
 
-    def post(self, request):
-        data = request.data
+    def create_obj(self, *args, **kwargs):
+        data = self.request.data
         name = data['login']
         email = data['email']
         new_obj = site.create_user('student', name, email)
@@ -181,16 +155,16 @@ class CreateStudent(CreateView):
 @AddRoute(url='/add-student/')
 class AddStudentToCourse(CreateView):
     template_name = 'add_student.html'
-    context = {
-        'courses': site.courses,
-        'students': site.students,
-    }
 
-    def get(self, request):
-        return self.context
+    def get_context_data(self, *args, **kwargs):
+        context = {
+            'courses': site.courses,
+            'students': site.students,
+        }
+        return context
 
-    def post(self, request):
-        data = request.data
+    def create_obj(self, *args, **kwargs):
+        data = self.request.data
         course_name = data['course_name']
         course = site.get_course(course_name)
         student_name = data['student_name']

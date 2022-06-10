@@ -2,7 +2,7 @@
 {% block content %}
     {{ super() }}
     <a href="/create_category/">Добавить категорию</a>
-    {% if data_list %}
+    {% if data_list['objects_list'] %}
         {% for item in data_list['objects_list'] %}
             <p>{{ item.name }}</p> <span>Количество курсов: {{item.course_count()}}</span>
             <a href="/create_course/?id={{ item.id }}">Показать курсы</a>
