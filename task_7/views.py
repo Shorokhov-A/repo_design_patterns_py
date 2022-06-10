@@ -158,9 +158,10 @@ class AddStudentToCourse(CreateView):
     template_name = 'add_student.html'
 
     def get_context_data(self, *args, **kwargs):
+        students = MapperRegistry.get_current_mapper('students').all()
         context = {
             'courses': site.courses,
-            'students': site.students,
+            'students': students,
         }
         return context
 
