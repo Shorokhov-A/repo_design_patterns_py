@@ -1,16 +1,19 @@
 import json
 
 from framework.view import View, TemplateView, ListView, CreateView
-from framework.patterns.generative_patterns import Engine, Logger
+from framework.patterns.generative_patterns import Engine, Logger, MapperRegistry
 from framework.patterns.structural_patterns import AddRoute, debug, DebugMethod
 from framework.patterns.behavioral_patterns import EmailNotifier, SmsNotifier, BaseSerializer
-from framework.patterns.data_mapper import MapperRegistry
+from framework.patterns.data_mapper import UnitOfWork
 
 site = Engine()
 logger = Logger('main')
 
 email_notifier = EmailNotifier()
 sms_notifier = SmsNotifier()
+
+UnitOfWork.new_current()
+UnitOfWork.get_current().set_mapper_registry(MapperRegistry)
 
 
 @debug
@@ -152,6 +155,8 @@ class CreateStudent(CreateView):
         email = data['email']
         new_obj = site.create_user('student', name, email)
         site.students.append(new_obj)
+        new_obj.mark_new()
+        UnitOfWork.get_current().commit()
 
 
 @AddRoute(url='/add-student/')
