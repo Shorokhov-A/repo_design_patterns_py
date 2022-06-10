@@ -1,7 +1,7 @@
 import json
 
 from framework.view import View, TemplateView, ListView, CreateView
-from framework.patterns.generative_patterns import Engine, Logger
+from framework.patterns.generative_patterns import Engine, Logger, MapperRegistry
 from framework.patterns.structural_patterns import AddRoute, debug, DebugMethod
 from framework.patterns.behavioral_patterns import EmailNotifier, SmsNotifier, BaseSerializer
 
@@ -136,7 +136,8 @@ class StudentsList(ListView):
 
     def get_context_data(self):
         context = super().get_context_data(self)
-        context.update({self.context_objects_list: site.students})
+        mapper = MapperRegistry.get_current_mapper('students')
+        context.update({self.context_objects_list: mapper.all()})
         return context
 
 
