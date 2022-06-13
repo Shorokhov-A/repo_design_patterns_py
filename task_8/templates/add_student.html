@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+    {{ super() }}
+    <h3>Добавление студента на курс</h3>
+    <form action="" method="post">
+        <select id="course_name" name="course_name">
+            {% for course in data_list['courses'] %}
+                <option value="{{ course.name }}">{{ course.name }}</option>
+            {% endfor %}
+        </select>
+        <select id="student_name" name="student_name">
+            {% for student in data_list['students'] %}
+                <option value="{{ student.name }}">{{ student.name }}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" value="Записать">
+    </form>
+{% endblock %}
