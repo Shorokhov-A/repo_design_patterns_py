@@ -1,10 +1,10 @@
 import json
 
 from framework.view import View, TemplateView, ListView, CreateView
-from framework.patterns.generative_patterns import Engine, Logger, MapperRegistry
+from framework.patterns.generative_patterns import Engine, Logger, Student
 from framework.patterns.structural_patterns import AddRoute, debug, DebugMethod
 from framework.patterns.behavioral_patterns import EmailNotifier, SmsNotifier, BaseSerializer
-from framework.patterns.data_mapper import UnitOfWork
+from framework.patterns.data_mapper import UnitOfWork, MapperRegistry
 
 site = Engine()
 logger = Logger('main')
@@ -140,7 +140,7 @@ class StudentsList(ListView):
 
     def get_context_data(self):
         context = super().get_context_data(self)
-        mapper = MapperRegistry.get_current_mapper('students')
+        mapper = MapperRegistry.get_current_mapper('students', Student)
         context.update({self.context_objects_list: mapper.all()})
         return context
 
@@ -155,7 +155,7 @@ class CreateStudent(CreateView):
         email = data['email']
         new_obj = site.create_user('student', name, email)
         site.students.append(new_obj)
-        new_obj.mark_new()
+        new_obj.mark_new('students')
         UnitOfWork.get_current().commit()
 
 
@@ -164,7 +164,7 @@ class AddStudentToCourse(CreateView):
     template_name = 'add_student.html'
 
     def get_context_data(self, *args, **kwargs):
-        students = MapperRegistry.get_current_mapper('students').all()
+        students = MapperRegistry.get_current_mapper('students', Student).all()
         context = {
             'courses': site.courses,
             'students': students,
