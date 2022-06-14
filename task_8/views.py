@@ -68,7 +68,7 @@ class CreateCategory(CreateView):
 @AddRoute(url='/create_course/')
 class CreateCourse(CreateView):
     template_name = 'create_course.html'
-    category_id = -1
+    category_id = None
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(self)
@@ -87,12 +87,11 @@ class CreateCourse(CreateView):
     def create_obj(self, *args, **kwargs):
         data = self.request.data
         name = data['name']
-        if self.category_id != -1:
-            category = site.find_category_by_id(int(self.category_id))
-            course = site.create_course('video_course', name, category)
-            course.observers.append(email_notifier)
-            course.observers.append(sms_notifier)
-            site.courses.append(course)
+        category = site.find_category_by_id(int(self.category_id))
+        course = site.create_course('video_course', name, category)
+        course.observers.append(email_notifier)
+        course.observers.append(sms_notifier)
+        site.courses.append(course)
 
 
 @AddRoute(url='/courses/')
