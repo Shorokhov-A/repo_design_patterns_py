@@ -1,7 +1,7 @@
 import copy
 from urllib.parse import unquote
 from framework.patterns.behavioral_patterns import ConsoleWriter, Subject
-from framework.patterns.data_mapper import DomainObject
+from framework.patterns.data_mapper import DomainObject, MapperRegistry
 
 
 class User:
@@ -35,11 +35,9 @@ class UserFactory:
 
 # Категория
 class Category(DomainObject):
-    auto_id = 0
 
     def __init__(self, name, category):
-        self.id = Category.auto_id
-        Category.auto_id += 1
+        self.id = 0
         self.name = name
         self.category = category
         self.courses = []
@@ -58,7 +56,7 @@ class CoursePrototype:
 
 
 # Курс
-class Course(CoursePrototype, Subject):
+class Course(CoursePrototype, Subject, DomainObject):
 
     def __init__(self, name, category):
         self.name = name
@@ -121,6 +119,10 @@ class Engine:
             if item.id == category_id:
                 return item
         raise Exception(f'Отсутствует катекория с id - {category_id}')
+
+    def find_category_by_id_mapper(self, id):
+        mapper = MapperRegistry.get_current_mapper('category', Category)
+        return mapper.find_cat_by_id(id)
 
     @staticmethod
     def create_course(course_type, name, category):

@@ -58,11 +58,7 @@ class CreateCategory(CreateView):
     def create_obj(self, *args, **kwargs):
         data = self.request.data
         name = data['category']
-        category_id = data.get('category_id')
-        category = None
-        if category_id:
-            category = site.find_category_by_id(int(category_id))
-        new_category = site.create_category(name, category)
+        new_category = site.create_category(name)
         site.categories.append(new_category)
         new_category.mark_new('category')
         UnitOfWork.get_current().commit()
@@ -77,11 +73,13 @@ class CreateCourse(CreateView):
         context = super().get_context_data(self)
         try:
             self.category_id = int(self.request.query_params['id'])
-            category = site.find_category_by_id(int(self.category_id))
+            # category = site.find_category_by_id(int(self.category_id))
+            category = site.find_category_by_id_mapper(int(self.category_id))
+            print(category.name)
             context.update({
                 'objects_list': category.courses,
                 'name': category.name,
-                'id': category.id
+                # 'id': category.id
             })
             return context
         except KeyError:
@@ -90,11 +88,14 @@ class CreateCourse(CreateView):
     def create_obj(self, *args, **kwargs):
         data = self.request.data
         name = data['name']
-        category = site.find_category_by_id(int(self.category_id))
+        # category = site.find_category_by_id(int(self.category_id))
+        category = site.find_category_by_id_mapper(int(self.category_id))
         course = site.create_course('video_course', name, category)
         course.observers.append(email_notifier)
         course.observers.append(sms_notifier)
         site.courses.append(course)
+        course.mark_new('course')
+        UnitOfWork.get_current().commit()
 
 
 @AddRoute(url='/courses/')

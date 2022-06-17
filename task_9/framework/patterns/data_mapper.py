@@ -149,7 +149,9 @@ class CategoryMapper:
         self.cursor.execute(statement, (id,))
         result = self.cursor.fetchone()
         if result:
-            return self.mapper_object(*result)
+            cat_name = self.mapper_object(*result)
+            cat_name.id = id
+            return cat_name
         else:
             raise RecordNotFoundException(f'record with id={id} not found')
 
@@ -178,10 +180,56 @@ class CategoryMapper:
             raise DbDeleteException(e.args)
 
 
+class CourseMapper:
+
+    def __init__(self, connection, mapper_object=None):
+        self.connection = connection
+        self.mapper_object = mapper_object
+        self.cursor = connection.cursor()
+        self.tablename = 'courses'
+
+    def all(self):
+        statement = f'SELECT * from {self.tablename}'
+        self.cursor.execute(statement)
+        result = []
+        for item in self.cursor.fetchall():
+            id, name, category_id = item
+            print(f'id={id} | course={name} | cat_id={category_id}')
+            course_name = self.mapper_object(name, category_id)
+            print(f'course_name={course_name}')
+            course_name.id = id
+            result.append(course_name)
+        return result
+
+    def course_by_category(self):
+        statement = f"SELECT id, course, category_id FROM {self.tablename} WHERE category_id=?"
+        self.cursor.execute(statement, (id,))
+        result = self.cursor.fetchone()
+        if result:
+            return self.mapper_object(*result)
+        else:
+            raise RecordNotFoundException(f'record with category_id={id} not found')
+
+    def count_by_cat_id(self):
+        statement = f'SELECT count(*) as course_count from {self.tablename} where category_id={id}'
+        self.cursor.execute(statement)
+        course_count = self.cursor.fetchall()
+        return course_count
+
+    def insert(self, obj):
+        statement = f"INSERT INTO {self.tablename} (course, category_id) VALUES (?, ?)"
+        self.cursor.execute(statement, (obj.name, obj.category.id))
+        try:
+            self.connection.commit()
+        except Exception as e:
+            raise DbCommitException(e.args)
+
+
 class MapperRegistry:
     mappers = {
         'students': StudentMapper,
         'category': CategoryMapper,
+        'course': CourseMapper,
     }
 
     # @staticmethod
