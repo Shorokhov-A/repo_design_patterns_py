@@ -34,7 +34,7 @@ class UserFactory:
 
 
 # Категория
-class Category:
+class Category(DomainObject):
     auto_id = 0
 
     def __init__(self, name, category):

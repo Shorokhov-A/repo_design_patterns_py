@@ -125,9 +125,63 @@ class StudentMapper:
             raise DbDeleteException(e.args)
 
 
+class CategoryMapper:
+
+    def __init__(self, connection, mapper_object=None):
+        self.connection = connection
+        self.mapper_object = mapper_object
+        self.cursor = connection.cursor()
+        self.tablename = 'categories'
+
+    def all(self):
+        statement = f'SELECT * from {self.tablename}'
+        self.cursor.execute(statement)
+        result = []
+        for item in self.cursor.fetchall():
+            id, name = item
+            cat_name = self.mapper_object(name, category=None)
+            cat_name.id = id
+            result.append(cat_name)
+        return result
+
+    def find_cat_by_id(self, id):
+        statement = f"SELECT category, id  FROM {self.tablename} WHERE id=?"
+        self.cursor.execute(statement, (id,))
+        result = self.cursor.fetchone()
+        if result:
+            return self.mapper_object(*result)
+        else:
+            raise RecordNotFoundException(f'record with id={id} not found')
+
+    def insert(self, obj):
+        statement = f"INSERT INTO {self.tablename} (category) VALUES (?)"
+        self.cursor.execute(statement, (obj.name,))
+        try:
+            self.connection.commit()
+        except Exception as e:
+            raise DbCommitException(e.args)
+
+    def update(self, obj):
+        statement = f"UPDATE {self.tablename} SET category=? WHERE id=?"
+        self.cursor.execute(statement, (obj.name, obj.id))
+        try:
+            self.connection.commit()
+        except Exception as e:
+            raise DbUpdateException(e.args)
+
+    def delete(self, obj):
+        statement = f"DELETE FROM {self.tablename} WHERE id=?"
+        self.cursor.execute(statement, (obj.id,))
+        try:
+            self.connection.commit()
+        except Exception as e:
+            raise DbDeleteException(e.args)
+
+
 class MapperRegistry:
     mappers = {
         'students': StudentMapper,
+        'category': CategoryMapper,
     }
 
     # @staticmethod

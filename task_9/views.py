@@ -1,7 +1,7 @@
 import json
 
 from framework.view import View, TemplateView, ListView, CreateView
-from framework.patterns.generative_patterns import Engine, Logger, Student
+from framework.patterns.generative_patterns import Engine, Logger, Student, Category
 from framework.patterns.structural_patterns import AddRoute, debug, DebugMethod
 from framework.patterns.behavioral_patterns import EmailNotifier, SmsNotifier, BaseSerializer
 from framework.patterns.data_mapper import UnitOfWork, MapperRegistry
@@ -51,7 +51,8 @@ class CreateCategory(CreateView):
 
     def get_context_data(self):
         context = super().get_context_data(self)
-        context.update({self.context_objects_list: site.categories})
+        mapper = MapperRegistry.get_current_mapper('category', Category)
+        context.update({self.context_objects_list: mapper.all()})
         return context
 
     def create_obj(self, *args, **kwargs):
@@ -63,6 +64,8 @@ class CreateCategory(CreateView):
             category = site.find_category_by_id(int(category_id))
         new_category = site.create_category(name, category)
         site.categories.append(new_category)
+        new_category.mark_new('category')
+        UnitOfWork.get_current().commit()
 
 
 @AddRoute(url='/create_course/')
@@ -100,7 +103,8 @@ class CoursesList(ListView):
 
     def get_context_data(self):
         context = super().get_context_data(self)
-        context.update({self.context_objects_list: site.categories})
+        mapper = MapperRegistry.get_current_mapper('category', Category)
+        context.update({self.context_objects_list: mapper.all()})
         return context
 
 

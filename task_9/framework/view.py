@@ -43,3 +43,4 @@ class CreateView(ListView):
     def post(self, request: Request, *args, **kwargs):
         self.request = request
         self.create_obj(self)
+        self.context.update(self.get_context_data(self))
