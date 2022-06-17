@@ -35,9 +35,11 @@ class UserFactory:
 
 # Категория
 class Category(DomainObject):
+    auto_id = 0
 
     def __init__(self, name, category):
-        self.id = 0
+        self.id = Category.auto_id
+        Category.auto_id += 1
         self.name = name
         self.category = category
         self.courses = []

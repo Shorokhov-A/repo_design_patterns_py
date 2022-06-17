@@ -1,7 +1,7 @@
 import json
 
 from framework.view import View, TemplateView, ListView, CreateView
-from framework.patterns.generative_patterns import Engine, Logger, Student, Category
+from framework.patterns.generative_patterns import Engine, Logger, Student, Category, Course
 from framework.patterns.structural_patterns import AddRoute, debug, DebugMethod
 from framework.patterns.behavioral_patterns import EmailNotifier, SmsNotifier, BaseSerializer
 from framework.patterns.data_mapper import UnitOfWork, MapperRegistry
@@ -52,7 +52,8 @@ class CreateCategory(CreateView):
     def get_context_data(self):
         context = super().get_context_data(self)
         mapper = MapperRegistry.get_current_mapper('category', Category)
-        context.update({self.context_objects_list: mapper.all()})
+        site.categories = mapper.all()
+        context.update({self.context_objects_list: site.categories})
         return context
 
     def create_obj(self, *args, **kwargs):
@@ -73,13 +74,12 @@ class CreateCourse(CreateView):
         context = super().get_context_data(self)
         try:
             self.category_id = int(self.request.query_params['id'])
-            # category = site.find_category_by_id(int(self.category_id))
-            category = site.find_category_by_id_mapper(int(self.category_id))
-            print(category.name)
+            category = site.find_category_by_id(int(self.category_id))
+            # category = site.find_category_by_id_mapper(int(self.category_id))
             context.update({
                 'objects_list': category.courses,
                 'name': category.name,
-                # 'id': category.id
+                'id': category.id
             })
             return context
         except KeyError:
@@ -88,8 +88,8 @@ class CreateCourse(CreateView):
     def create_obj(self, *args, **kwargs):
         data = self.request.data
         name = data['name']
-        # category = site.find_category_by_id(int(self.category_id))
-        category = site.find_category_by_id_mapper(int(self.category_id))
+        category = site.find_category_by_id(int(self.category_id))
+        # category = site.find_category_by_id_mapper(int(self.category_id))
         course = site.create_course('video_course', name, category)
         course.observers.append(email_notifier)
         course.observers.append(sms_notifier)
@@ -105,7 +105,10 @@ class CoursesList(ListView):
     def get_context_data(self):
         context = super().get_context_data(self)
         mapper = MapperRegistry.get_current_mapper('category', Category)
-        context.update({self.context_objects_list: mapper.all()})
+        courses_mapper = MapperRegistry.get_current_mapper('course', site)
+        site.categories = mapper.all()
+        site.courses = courses_mapper.all()
+        context.update({self.context_objects_list: site.categories})
         return context
 
 
@@ -145,7 +148,8 @@ class StudentsList(ListView):
     def get_context_data(self):
         context = super().get_context_data(self)
         mapper = MapperRegistry.get_current_mapper('students', Student)
-        context.update({self.context_objects_list: mapper.all()})
+        site.students = mapper.all()
+        context.update({self.context_objects_list: site.students})
         return context
 
 

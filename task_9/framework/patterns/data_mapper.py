@@ -140,7 +140,7 @@ class CategoryMapper:
         for item in self.cursor.fetchall():
             id, name = item
             cat_name = self.mapper_object(name, category=None)
-            cat_name.id = id
+            cat_name.id = id - 1
             result.append(cat_name)
         return result
 
@@ -149,9 +149,7 @@ class CategoryMapper:
         self.cursor.execute(statement, (id,))
         result = self.cursor.fetchone()
         if result:
-            cat_name = self.mapper_object(*result)
-            cat_name.id = id
-            return cat_name
+            return self.mapper_object(*result)
         else:
             raise RecordNotFoundException(f'record with id={id} not found')
 
@@ -188,17 +186,28 @@ class CourseMapper:
         self.cursor = connection.cursor()
         self.tablename = 'courses'
 
+    # def all(self):
+    #     statement = f'SELECT * from {self.tablename}'
+    #     self.cursor.execute(statement)
+    #     result = []
+    #     for item in self.cursor.fetchall():
+    #         id, name, category_id = item
+    #         print(f'id={id} | course={name} | cat_id={category_id}')
+    #         course_name = self.mapper_object(name, category_id)
+    #         print(f'course_name={course_name}')
+    #         course_name.id = id - 1
+    #         result.append(course_name)
+    #     return result
     def all(self):
         statement = f'SELECT * from {self.tablename}'
         self.cursor.execute(statement)
         result = []
         for item in self.cursor.fetchall():
             id, name, category_id = item
-            print(f'id={id} | course={name} | cat_id={category_id}')
-            course_name = self.mapper_object(name, category_id)
-            print(f'course_name={course_name}')
-            course_name.id = id
-            result.append(course_name)
+            category = self.mapper_object.find_category_by_id(category_id)
+            course = self.mapper_object.create_course('video_course', name, category)
+            course.id = id - 1
+            result.append(course)
         return result
 
     def course_by_category(self):
