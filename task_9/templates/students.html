@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+    {{ super() }}
+    <a href="/create-students/">Добавить студента</a>
+    <a href="/add-student/">Добавить студента на курс</a>
+    <h3>Список студентов:</h3>
+    {% if data_list %}
+        {% for item in data_list['objects_list'] %}
+            <p>{{ item.name }}</p>
+        {% endfor %}
+    {% endif %}
+{% endblock %}

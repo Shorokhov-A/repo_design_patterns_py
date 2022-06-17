@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {{ super() }}
+    {% if data_list %}
+        {% for item in data_list['objects_list'] %}
+         <p>{{ item.name }} {{ item.id }}</p> <span>Количество курсов: {{item.course_count()}}</span>
+         <a href="/create_course/?id={{ item.id }}">Показать курсы</a>
+        {% endfor %}
+    {% endif %}
+    <form action="" method="post">
+        <label for="category">Категория</label>
+        <input name="category" id="category" type="text">
+        <input type="submit" value="Добавить категорию">
+    </form>
+{% endblock %}
