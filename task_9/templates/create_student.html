@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+    {{ super() }}
+    {% if data_list %}
+        {% for item in data_list %}
+            <p>{{ item.name }}</p>
+        {% endfor %}
+    {% endif %}
+    <form action="" method="post">
+        <label for="login">Логин</label>
+        <input type="text" name="login" id="login">
+        <br>
+        <label for="email">Адрес электронной почты</label>
+        <input type="email" name="email" id="email">
+        <br>
+        <input type="submit" value="Добавить студента">
+    </form>
+{% endblock %}
